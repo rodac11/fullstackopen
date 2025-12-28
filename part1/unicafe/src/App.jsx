@@ -3,11 +3,14 @@ import { useState } from 'react'
 //
 
 const Statistics = ({good, neutral, bad}) => {
+    //STEP 3 NOTE: I had already written a component
+    //displaying statistics into its component.
     const all = good + neutral + bad
     const avg = (good - bad) / all
     const positive = good / all * 100.0
     return(
 	<div>
+	    <h1>statistics</h1>
 	    <div>good {good}</div>
 	    <div>neutral {neutral}</div>
 	    <div>bad {bad}</div>
@@ -49,7 +52,6 @@ const App = () => {
 	  <Button onClick={handleGoodClick} text='good'/>
 	  <Button onClick={handleNeutralClick} text='neutral'/>
 	  <Button onClick={handleBadClick} text='bad'/>
-	  <h1>statistics</h1>
 	  <Statistics good={good} neutral={neutral} bad={bad}/>
     </div>
   )
