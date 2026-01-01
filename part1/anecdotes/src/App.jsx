@@ -6,6 +6,20 @@ const Button = ({onClick, text}) =>{
     )
 }
 
+const AnecdoteDisplay = ({anecdote, count}) => {
+    return(
+	<>
+	    <div>
+		{anecdote}
+	    </div>
+	    <div>
+		has {count} votes
+	    </div>
+	</>
+    )
+}
+	    
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -23,33 +37,52 @@ const App = () => {
     
     const [selected, setSelected] = useState(0)
     const [votes, setVotes] = useState(a)
+    const [maxIndex, setMaxIndex] = useState(0)
 
     const handleRandomClick = () => {
 	const randomAnecdoteIndex = Math.floor(Math.random() * alength)
 	setSelected(randomAnecdoteIndex)
+	console.log(votes)
     }
 
     const handleVoteClick = () => {
 	const updatedVotes = [...votes]
 	updatedVotes[selected] += 1
 	setVotes(updatedVotes)
+	if (updatedVotes[selected] > updatedVotes[maxIndex]) {
+	    setMaxIndex(selected)
+	}
+	console.log(updatedVotes)
     }
-
- //   console.log(votes)
+    
   return (
       <div>
+	  
 	  <div>
-	      {anecdotes[selected]}
+	      <h1>Anecdote of the day</h1>
+	      <AnecdoteDisplay anecdote={anecdotes[selected]} count={votes[selected]}/>
 	  </div>
+	  
 	  <div>
-	      has {votes[selected]} votes
-	  </div>
-	 <div>
 	      <Button onClick={handleRandomClick} text='next anecdote'/>
 	      <Button onClick={handleVoteClick} text='vote'/>
-	 </div>	  
+	  </div>
+
+	  <div>
+	      <h1>Anecdote with most votes</h1>
+	      <AnecdoteDisplay anecdote={anecdotes[maxIndex]} count={votes[maxIndex]}/>
+	  </div>
+	  
+
       </div>
   )
 }
 
 export default App
+/*
+	if (votes[selected] = votes[maxIndex]) {
+	    console.log(maxIndex)
+	    setMaxIndex(selected)
+	    console.log(maxIndex)
+	    }
+	    */
