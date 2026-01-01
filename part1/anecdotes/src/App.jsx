@@ -79,10 +79,4 @@ const App = () => {
 }
 
 export default App
-/*
-	if (votes[selected] = votes[maxIndex]) {
-	    console.log(maxIndex)
-	    setMaxIndex(selected)
-	    console.log(maxIndex)
-	    }
-	    */
+
