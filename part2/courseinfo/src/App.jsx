@@ -10,23 +10,34 @@ const Course = ({course}) => {
 const Header = ({name}) => <h1>{name}</h1>
 
 const Content = ({parts}) => {
-    
+    /*
     let sumExercises = 0
     for (let i = 0; i < parts.length; i++) {
 	sumExercises += parts[i].exercises
-    }
+	}
+	*/
+
+    const sumExercises = parts.reduce(
+	(accumulator, currentValue) => accumulator +
+	    currentValue.exercises,
+	0,
+    )
+
+    console.log(sumExercises)
     
     return (
 	<div>    
 	    {parts.map(part =>
 		<Part key={part.id} part={part}/>
 	    )}
-	    <p><strong>total of {sumExercises} exercises</strong></p>
+	    <Sum val={sumExercises}/>	    
 	</div>
     )
 }
 
 const Part = ({part}) => <p>{part.name} {part.exercises}</p>
+
+const Sum = ({val}) => <p><strong>total of {val} exercises</strong></p>
 
 const App = () => {
     const course = {
