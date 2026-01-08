@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons.js'
+
 const Filter = (props) => {
     return (
 	<form onSubmit={props.onSubmit}>
@@ -31,11 +32,15 @@ const PersonForm = (props) => {
     )
 }
 
-const Persons = ({arr}) => {
+const Persons = ({arr, deletePerson}) => {
     return(
 	<div>
 	    {arr.map((person) => (
-		<li key={person.name}> {person.name} {person.number}</li>))}
+		<li key={person.name}>
+		    {person.name} {person.number}
+		    <button onClick={() => deletePerson(person.id)}>delete</button>
+		</li>
+	    ))}
 	</div>
     )
 }
@@ -49,11 +54,9 @@ const App = () => {
 
     //getAll
     useEffect(() => {
-	console.log('effect')
 	personService
 	    .getAll()
 	    .then((initialPersons) => {
-		console.log('promise fulfilled')
 		setPersons(initialPersons)
 	    })
     },[])   
@@ -83,12 +86,22 @@ const App = () => {
 	}
     }
 
+    const deletePerson = (id) => {
+	personService
+	    .deleteResource(id)
+	    .then((deletedObject) => {
+		setPersons(persons.filter((person) => person.id !== id))
+	    })
+	
+    }
+
     const handleNameChange = (event) => {
 	setNewName(event.target.value)
     }
 
     const handleNumberChange = (event) => {
 	setNewNumber(event.target.value)
+	
     }
 
     const handleFilterChange = (event) => {
@@ -118,8 +131,9 @@ const App = () => {
 			numberOnChange={handleNumberChange}
 	    />
 	    <h2>Numbers</h2>
-
-	    <Persons arr={personsToShow}/>
+	    <Persons arr={personsToShow}
+		     deletePerson={deletePerson}
+	    />
 	</div>
     )
 }

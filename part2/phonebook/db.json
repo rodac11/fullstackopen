@@ -11,29 +11,9 @@
       "id": "2"
     },
     {
+      "id": "8a64",
       "name": "Dan Abramov",
-      "number": "12-43-234345",
-      "id": "3"
-    },
-    {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": "4"
-    },
-    {
-      "id": "9627",
-      "name": "Rod",
-      "number": "8675309"
-    },
-    {
-      "id": "cc83",
-      "name": "Rod2",
-      "number": "88888"
-    },
-    {
-      "id": "3f6d",
-      "name": "Rod3",
-      "number": "655-123456"
+      "number": "12-43-234345"
     }
   ]
 }

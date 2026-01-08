@@ -11,5 +11,12 @@ const getAll = () => {
     return request.then((response) => response.data)
 }
 
+const deleteResource = (id) => {
+    const urlToDelete = baseUrl.concat('/',id)
+        const request = axios.delete(urlToDelete)
+    return request.then((response) => {
+    })
+}
+   
 
-export default {getAll,create,}
+export default {getAll,create,deleteResource,}
