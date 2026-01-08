@@ -91,9 +91,7 @@ const App = () => {
 				    ? oldPerson
 				    : toUpdate
 			    ))
-			    })
-		    
-		    console.log('updated')
+			    })		 
 		}
 	    }
 	    
