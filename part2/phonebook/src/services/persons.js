@@ -6,6 +6,12 @@ const create = (newObject) => {
     return request.then((response) => response.data)
 }
 
+const updateResource = (objectToUpdate) => {
+    const urlToUpdate = baseUrl.concat('/', objectToUpdate.id)
+    const request = axios.put(urlToUpdate, objectToUpdate)
+    return request.then((response) => response.data)
+}
+
 const getAll = () => {
     const request = axios.get(baseUrl)
     return request.then((response) => response.data)
@@ -19,4 +25,4 @@ const deleteResource = (id) => {
 }
    
 
-export default {getAll,create,deleteResource,}
+export default {getAll,create,deleteResource, updateResource}

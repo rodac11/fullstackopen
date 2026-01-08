@@ -66,15 +66,43 @@ const App = () => {
 	event.preventDefault()
     }
 
+
     const addName = (event) => {
 	event.preventDefault()
-	if (persons.some(x => x.name === newName)){
-	    window.alert(`${newName} is already added to phonebook`)
+
+
+	//check name
+	if (persons.some(x => (x.name === newName))){
+
+	    //check number as well
+	    if(persons.some(y => (y.number === newNumber))){
+		window.alert(`${newName} is already added to phonebook with number ${newNumber}`)
+	    } else {
+		
+		if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+		    const toUpdate = persons.find(x => (x.name === newName))
+		    toUpdate.number = newNumber
+		    console.log(toUpdate)
+		    personService
+			.updateResource(toUpdate)
+			.then(returnedPerson => {
+			    setPersons(persons.map((oldPerson) =>
+				oldPerson.name !== newName
+				    ? oldPerson
+				    : toUpdate
+			    ))
+			    })
+		    
+		    console.log('updated')
+		}
+	    }
+	    
 	} else {
-	    //deleted id assign,
+	    //add new person
+	    //no id assign,
 	    //'better to let the server generate ids for our resources' -- Part 2d Setting Data to the Server
-	    const personObject = {name: newName,
-				  number: newNumber,
+	const personObject = {name: newName,
+			      number: newNumber,
 				 }
 	    personService
 		.create(personObject)
