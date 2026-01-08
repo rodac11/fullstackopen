@@ -46,6 +46,7 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
 
+    //getAll
     useEffect(() => {
 	console.log('effect')
 	axios.get('http://localhost:3001/persons')
@@ -53,7 +54,7 @@ const App = () => {
 		console.log('promise fulfilled')
 		setPersons(response.data)
 	    })
-    }, [])
+    },[])   
 	      
     
     const filterByName = (event) => {
@@ -62,18 +63,21 @@ const App = () => {
 
     const addName = (event) => {
 	event.preventDefault()
-	
 	if (persons.some(x => x.name === newName)){
 	    window.alert(`${newName} is already added to phonebook`)
 	} else {
-	    const newId = persons.length + 1
+	    //deleted id assign,
+	    //'better to let the server generate ids for our resources' -- Part 2d Setting Data to the Server
 	    const personObject = {name: newName,
 				  number: newNumber,
-				  id: newId
 				 }
-	    setPersons(persons.concat(personObject))
-	    setNewName('')
-	    setNewNumber('')
+	    axios
+		.post('http://localhost:3001/persons', personObject)
+		.then(response => {
+		    setPersons(persons.concat(response.data))
+		    setNewName('')
+		    setNewNumber('')
+		})
 	}
     }
 
