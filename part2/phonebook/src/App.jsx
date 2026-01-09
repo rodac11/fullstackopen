@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons.js'
+import Notification from './components/Notification'
 
 const Filter = (props) => {
     return (
@@ -51,6 +52,7 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
+    const [errorMessage, setErrorMessage] = useState(null)
 
     //getAll
     useEffect(() => {
@@ -91,7 +93,15 @@ const App = () => {
 				    ? oldPerson
 				    : toUpdate
 			    ))
-			    })		 
+			    {
+				setErrorMessage(`Updated ${newName}`)
+				setTimeout(() => {
+				    setErrorMessage(null)
+				}, 5000)
+			    }
+			    setNewName('')
+			    setNewNumber('')
+			})
 		}
 	    }
 	    
@@ -106,8 +116,14 @@ const App = () => {
 		.create(personObject)
 		.then(returnedPerson => {
 		    setPersons(persons.concat(returnedPerson))
+		    {
+			setErrorMessage(`Added ${newName}`)
+			setTimeout(() => {
+			    setErrorMessage(null)
+			}, 5000)
+		    }
 		    setNewName('')
-		    setNewNumber('')
+		    setNewNumber('')		    
 		})
 	}
     }
@@ -127,7 +143,6 @@ const App = () => {
 
     const handleNumberChange = (event) => {
 	setNewNumber(event.target.value)
-	
     }
 
     const handleFilterChange = (event) => {
@@ -142,14 +157,13 @@ const App = () => {
     return (
 	<div>
 	    <h2>Phonebook</h2>
-	    
 	    <Filter onSubmit={filterByName}
 		    value={filter}
 		    onChange={handleFilterChange}
 	    />
 	    
 	    <h3>add a new</h3>
-	    
+	    <Notification message={errorMessage}/>
 	    <PersonForm	onSubmit={addName}
 			nameValue={newName}
 			nameOnChange={handleNameChange}
