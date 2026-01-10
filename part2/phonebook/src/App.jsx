@@ -129,10 +129,18 @@ const App = () => {
     }
 
     const deletePerson = (id) => {
+	
 	personService
 	    .deleteResource(id)
 	    .then((deletedObject) => {
+		console.log(deletedObject)
 		setPersons(persons.filter((person) => person.id !== id))
+		{
+		    setErrorMessage(`Removed ${deletedObject.name}`)
+		    setTimeout(() => {
+			setErrorMessage(null)
+		    }, 5000)
+		}
 	    })
 	
     }
