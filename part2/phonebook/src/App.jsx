@@ -52,7 +52,8 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
-    const [errorMessage, setErrorMessage] = useState(null)
+    const [message, setMessage] = useState(null)
+    const [isError, setIsError] = useState(false)
 
     //getAll
     useEffect(() => {
@@ -94,9 +95,9 @@ const App = () => {
 				    : toUpdate
 			    ))
 			    {
-				setErrorMessage(`Updated ${newName}`)
+				setMessage(`Updated ${newName}`)
 				setTimeout(() => {
-				    setErrorMessage(null)
+				    setMessage(null)
 				}, 5000)
 			    }
 			    setNewName('')
@@ -116,12 +117,7 @@ const App = () => {
 		.create(personObject)
 		.then(returnedPerson => {
 		    setPersons(persons.concat(returnedPerson))
-		    {
-			setErrorMessage(`Added ${newName}`)
-			setTimeout(() => {
-			    setErrorMessage(null)
-			}, 5000)
-		    }
+		    handleMessage(`Added ${newName}`, false)
 		    setNewName('')
 		    setNewNumber('')		    
 		})
@@ -129,20 +125,26 @@ const App = () => {
     }
 
     const deletePerson = (id) => {
-	
+	const toDelete = persons.find(n => n.id === id)
 	personService
 	    .deleteResource(id)
 	    .then((deletedObject) => {
-		console.log(deletedObject)
 		setPersons(persons.filter((person) => person.id !== id))
-		{
-		    setErrorMessage(`Removed ${deletedObject.name}`)
-		    setTimeout(() => {
-			setErrorMessage(null)
-		    }, 5000)
-		}
+		handleMessage(`Removed ${deletedObject.name}`, false)
 	    })
-	
+	    .catch(error => {
+		//handleMessage(`${toDelete.name} was already removed from this list`, true)
+		handleMessage(`${toDelete.name} was already removed from this list`, true)
+		setPersons(persons.filter(n => n.id !== id))
+	    })
+    }
+
+    const handleMessage = (msg, isErr) => {
+	setIsError(isErr)
+	setMessage(msg)
+	setTimeout(() => {
+	    setMessage(null)
+	}, 5000)
     }
 
     const handleNameChange = (event) => {
@@ -171,7 +173,8 @@ const App = () => {
 	    />
 	    
 	    <h3>add a new</h3>
-	    <Notification message={errorMessage}/>
+	    <Notification message={message}
+			  error={isError}/>
 	    <PersonForm	onSubmit={addName}
 			nameValue={newName}
 			nameOnChange={handleNameChange}
