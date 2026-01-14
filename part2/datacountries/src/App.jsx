@@ -1,51 +1,63 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+const api_key = import.meta.env.VITE_WEATHER_KEY
 
-const Country = ({country, toggleShow}) => {
-    const c = {
-	name: country.name.common,
-	region: country.region,
-	area: country.area,
-	population: country.population,
-	languages: Object.values(country.languages),
-	flag: country.flags.svg
+const Weather = ({weather}) => {
+    if(weather) {
+    return (
+	<div>
+	    <h2>Weather in {weather.cityname}</h2>
+	    <p>Temperature {weather.tempC}</p>
+	    <p>{weather.desc}</p>
+	    <img src={`https://openweathermap.org/img/wn/${weather.imgId}@2x.png`}/>
+	    <p>{weather.windSpeed} m/s</p>
+	</div>
+    )
     }
+}
+
+const Country = ({country, weather, toggleShow}) => {
+    
     if (country.show) {
+	const languages = Object.values(country.languages)
 	return (
 	<div>
-	    <h1>{c.name}</h1>
-	    <p>Region: {c.region}</p>
-	    <p>Area: {c.area}</p>
-	    <p>Population: {c.population}</p>
+	    <h1>{country.name.common}</h1>
+	    <p>Region: {country.region}</p>
+	    <p>Capital: {country.capital[0]}</p>
+	    <p>Area: {country.area}</p>
+	    <p>Population: {country.population}</p>
 	    <h2>Languages</h2>
 	    <ul>
 		{
-		    c.languages.map(n =>
+		    languages.map(n =>
 			<li key={n}>{n}</li>
 		    )}
 	    </ul>
-	    <img src={c.flag}/>
+	    <img src={country.flags.svg}/>
+	    <Weather weather={weather}/>
 	</div>
 	)
     }
     else return (
 	<li>
-	    {c.name} <button onClick={toggleShow}>show</button>				
+	    {country.name.common} <button onClick={toggleShow}>show</button>				
 	</li>
     )
 }
 
-const Results = ({countries, toggleShowOf}) => {
+const Results = ({countries, toggleShowOf, weather}) => {
     if (countries.length === 0) return ''
+    
     if (countries.length === 1) {
 	const singleCountry = countries[0]
 	singleCountry.show = true
-	return (<Country country={singleCountry}/>)
+	return (<Country country={singleCountry} weather={weather}/>)
     }
+
     if (countries.length > 10) {
 	return <p>Too many results, be more specific</p>
     } else if (countries.length !== 1) {
-	console.log(countries.length)
 	return (
 	    <div>{
 		countries.map(country => (
@@ -62,10 +74,11 @@ const App = () => {
     const [value, setValue] = useState('')
     const [country, setCountry] = useState(null)
     const [countries, setCountries] = useState([])
+    const [city, setCity] = useState(null)
+    const [weather, setWeather] = useState({})
     
     useEffect(() => {
 	if (country) {
-	    console.log(`searching list: ${country}`)
 	    axios
 		.get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
 		.then(response => {
@@ -74,24 +87,45 @@ const App = () => {
 		    if (arr.length <= 10) {
 			
 			arr.map(n => (n.show = false))
-			console.log(arr)
 			setCountries(arr)
+			if (arr.length === 1)
+			    setCity(arr[0].capital[0])
 		    } else {
 			setCountries(arr)
-			console.log(arr)
 		    }
 		})
 	}		    
     }, [country])
+    
+    useEffect(() => {
+	if (city) {
+	    axios
+		.get(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api_key}`)
+		.then(response => {
+		    const weatherObject = {
+			cityname: city,
+			tempC: (Math.round((response.data.main.temp - 273.15) * 100) / 100),
+			desc: response.data.weather[0].description,
+			imgId: response.data.weather[0].icon,
+			windSpeed: response.data.wind.speed
+		    }
+		    setWeather(weatherObject)
+		})
+	}
+    }, [city])
 
     const handleChange = (event) => {
+	event.preventDefault()
 	setValue(event.target.value)
     }
 
+    const handleWeather = (weatherObj) => {
+	setWeather(weatherObj)
+    }
+    
     const toggleShowOf = name => {
 	const country = countries.find(n => n.name === name)
 	const changedCountry = { ...country, show: !country.show}
-	console.log('flag toggle')
 	setCountries(countries.map( country => (country.name !== name ? country: changedCountry)))		    
     }
 
@@ -107,7 +141,9 @@ const App = () => {
 				      onChange={handleChange} />
 	    </form>
 	    <Results countries={countries}
-		     toggleShowOf={toggleShowOf}/>
+		     toggleShowOf={toggleShowOf}
+		     weather={weather}
+		     />
 	</div>
     )
 }
