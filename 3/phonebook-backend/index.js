@@ -59,15 +59,31 @@ app.post('/api/persons', (request, response) => {
 	return response.status(400).json({
 	    error: 'nothing to post',
 	})
-    } else {
-	const person = {
+    }
+    if (!body.name) {
+	return response.status(400).json({
+	    error: 'missing name'
+	})
+    }
+    if (!body.number) {
+	return response.status(400).json({
+	    error: 'missing number'
+	})
+    }
+ 
+    if (persons.some(p => p.name === body.name)) {
+	return response.status(409).json({
+	    error: 'name must be unique'
+	})
+    }
+    const person = {
 	id: generateId(),
 	name: body.name,
 	number: body.number,
     }	
-	persons = persons.concat(person)
-	response.json(person)
-    }
+    persons = persons.concat(person)
+    response.json(person)
+    
 })
 
 app.delete('/api/persons/:id', (request, response) => {
