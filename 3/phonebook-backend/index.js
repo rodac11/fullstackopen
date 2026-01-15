@@ -46,6 +46,28 @@ app.get('/api/persons/:id', (request, response) => {
     }
 })
 
+const generateId = () => {
+    //one million ought to be enough...!
+    return Math.floor(Math.random() * 1000000)
+}
+
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+
+    if(request.content) {
+	return response.status(400).json({
+	    error: 'nothing to post',
+	})
+    }
+    const person = {
+	id: generateId(),
+	name: body.name,
+	number: body.number,
+    }	
+    persons = persons.concat(person)
+    response.json(person)
+})
+
 app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id
     const person = persons.find((p) => p.id === id)
