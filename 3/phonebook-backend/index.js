@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
 
-app.use(express.json())
 
 let persons = [
     { 
@@ -25,6 +24,9 @@ let persons = [
 	"number": "39-23-6423122"
     }
 ]
+
+app.use(express.json())
+
 
 app.get('/', (request, response) => {
     response.send(
@@ -53,19 +55,19 @@ const generateId = () => {
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-
-    if(request.content) {
+    if(!body) {
 	return response.status(400).json({
 	    error: 'nothing to post',
 	})
-    }
-    const person = {
+    } else {
+	const person = {
 	id: generateId(),
 	name: body.name,
 	number: body.number,
     }	
-    persons = persons.concat(person)
-    response.json(person)
+	persons = persons.concat(person)
+	response.json(person)
+    }
 })
 
 app.delete('/api/persons/:id', (request, response) => {
