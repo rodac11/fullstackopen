@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 var morgan = require('morgan')
 const cors = require('cors')
+app.use(express.static('dist'))
 app.use(cors())
 
 
@@ -48,11 +49,6 @@ app.use(morgan(function (tokens, req, res) {
     ].join(' ')
 })
 )
-
-app.get('/', (request, response) => {
-    response.send(
-	'<h1>Hello World!</h1><p>The app is in /api/persons/ btw</p>')
-})
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
