@@ -2,6 +2,29 @@ const express = require('express')
 const app = express()
 var morgan = require('morgan')
 const cors = require('cors')
+const mongoose = require('mongoose')
+
+const password = process.argv[2]
+const url = `mongodb+srv://rodac:${password}@cluster0.nkb8ifu.mongodb.net/?appName=Cluster0`
+
+mongoose.set('strictQuery', false)
+mongoose.connect(url, {family: 4})
+
+const personSchema = new mongoose.Schema({
+    name: String,
+    number: String,
+})
+
+personSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+	returnedObject.id = returnedObject._id.toString()
+	delete returnedObject._id
+	delete returnedObject.__v
+    }
+})
+
+const Person = mongoose.model('Person', personSchema)
+
 app.use(express.static('dist'))
 app.use(cors())
 
@@ -51,7 +74,9 @@ app.use(morgan(function (tokens, req, res) {
 )
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(result => {
+	response.json(result)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
