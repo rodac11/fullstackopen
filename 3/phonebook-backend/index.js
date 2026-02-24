@@ -1,11 +1,12 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 var morgan = require('morgan')
 const cors = require('cors')
 const mongoose = require('mongoose')
 
-const password = process.argv[2]
-const url = `mongodb+srv://rodac:${password}@cluster0.nkb8ifu.mongodb.net/?appName=Cluster0`
+
+const url = process.env.MONGODB_URI
 
 mongoose.set('strictQuery', false)
 mongoose.connect(url, {family: 4})
