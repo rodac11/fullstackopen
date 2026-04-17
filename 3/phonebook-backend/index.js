@@ -68,19 +68,25 @@ app.post('/api/persons', (request, response) => {
 	    error: 'missing number'
 	})
     }
- 
+
+    //"At this stage, you can ignore ..."
     if (persons.some(p => p.name === body.name)) {
 	return response.status(409).json({
 	    error: 'name must be unique'
 	})
     }
-    const person = {
+    
+    const person = new Person({
 	id: generateId(),
 	name: body.name,
 	number: body.number,
-    }	
+    })
+    
+    console.log('posting')
     persons = persons.concat(person)
-    response.json(person)
+    person.save().then(savedPerson => {   
+	response.json(savedPerson)
+    })
     
 })
 
