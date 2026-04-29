@@ -31,20 +31,17 @@ app.use(morgan(function (tokens, req, res) {
 
 app.get('/api/persons', (request, response) => {
     Person.find({}).then(result => {
+	console.log(result)
 	response.json(result)
     })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find((p) => p.id === id)
-    if (person) {
+    Person.findById(request.params.id).then((person) => {
 	response.json(person)
-    } else {
-	response.statusMessage = "There was no person found for the given id"
-	response.status(404).end()
-    }
+    })
 })
+
 
 const generateId = () => {
     //one million ought to be enough...!
@@ -82,7 +79,6 @@ app.post('/api/persons', (request, response) => {
 	number: body.number,
     })
     
-    console.log('posting')
     persons = persons.concat(person)
     person.save().then(savedPerson => {   
 	response.json(savedPerson)
@@ -90,25 +86,15 @@ app.post('/api/persons', (request, response) => {
     
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find((p) => p.id === id)
-    if (person) {
-	persons = persons.filter((p) => p.id !== id)
-	response.status(204).end()
-    } else {
-	response.statusMessage = "Delete failed! The id given is not in the list."
-	response.status(404).end()
-    }
+app.delete('/api/persons/:id', (request, response, next) => {
+    console.log(request.params.id)
+    Person.findByIdAndDelete(request.params.id)
+	.then(result => {
+	    response.status(204).end()
+	})
+	.catch(error => next(error))
 })
 
-app.get('/info', (request, response) => {
-    const tim = Date(Date.now()).toString()
-    const str = `<p>Phonebook has info for ${persons.length} people</p><p>${tim}`
-    console.log(persons.length)
-    console.log(Date(Date.now()))
-    response.send(str)
-})
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
