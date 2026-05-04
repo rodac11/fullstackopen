@@ -88,12 +88,42 @@ app.post('/api/persons', (request, response, next) => {
     })    
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+
+    Person.findById(request.params.id)
+	.then((person) => {
+	    if(!person) {
+		return response.status(404).end()
+	    }
+
+	    person.name = body.name
+	    person.number = body.number
+
+	    return person.save().then((updatedPerson) => {
+		response.json(updatedPerson)
+	    })
+	})
+	.catch((error) => next(error))
+})
+
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndDelete(request.params.id)
 	.then(result => {
 	    response.status(204).end()
 	})
 	.catch(error => next(error))
+})
+
+app.get('/info', (request, response) => {
+    Person.find({}).then(result => {
+	console.log(result.length)
+	const tim = Date(Date.now()).toString()
+	const str = `<p>Phonebook has info for ${result.length} people</p><p>${tim}`
+	console.log(persons.length)
+	console.log(Date(Date.now()))
+	response.send(str)
+    })
 })
 
 const unknownEndpoint = (request, response) => {
