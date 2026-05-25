@@ -70,11 +70,11 @@ app.post('/api/persons', (request, response, next) => {
     }
 
     //"At this stage, you can ignore ..."
-    if (persons.some(p => p.name === body.name)) {
-	return response.status(409).json({
-	    error: 'name must be unique'
-	})
-    }
+   // if (persons.some(p => p.name === body.name)) {
+    //	return response.status(409).json({
+//	    error: 'name must be unique'
+//	})
+//    }
     
     const person = new Person({
 	id: generateId(),
