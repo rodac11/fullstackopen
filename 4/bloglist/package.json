@@ -1,0 +1,18 @@
+{
+  "name": "bloglist",
+  "version": "0.0.1",
+  "description": "Blog list application for saving info about interesting blogs stumbled across on the internet.",
+  "license": "MIT",
+  "author": "rodrigo",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.6.2"
+  }
+}
