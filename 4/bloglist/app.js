@@ -22,7 +22,7 @@ mongoose
     })
 
 //not sure what dist is for as I don't have frontend yet
-//app.use(express.static('dist'))
+app.use(express.static('dist'))
 app.use(express.json())
 app.use(middleware.requestLogger)
 
